@@ -1,3 +1,9 @@
+.contenedor{
+    background-color: rgb(139, 126, 126);
+    padding-left: 360px;
+}
+
+
 .caja{
    
     height: 100px;

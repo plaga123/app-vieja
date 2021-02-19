@@ -85,6 +85,7 @@ export class HomeComponent implements OnInit {
             'success'
           )
          this.ganste = true; 
+         this.ganador = "Felicidades Ganaste X";
         }
       });
 
@@ -102,6 +103,7 @@ export class HomeComponent implements OnInit {
               'success'
             )
           this.ganste = true; 
+          this.ganador = "Felicidades Ganaste O";
           }
         })
       this.jugador = 1;
