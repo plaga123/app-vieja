@@ -1,6 +1,7 @@
-import { ThrowStmt } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
 
+import Swal from 'sweetalert2';
+import { ViejaService } from '../services/vieja.service';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -12,6 +13,7 @@ export class HomeComponent implements OnInit {
   jugador:number=0;
   jugadas:Array<any>=[];
   ganste:boolean = false;
+  ganador:string="";
 
   txt1:string="";
   txt2:string="";
@@ -34,16 +36,31 @@ export class HomeComponent implements OnInit {
   caja9:string="";
 
 
-  constructor() { }
+  constructor(
+    private serviValidar:ViejaService
+  ) { }
 
   ngOnInit(): void {
   }
 
 
-  onSelect(e){
+  onSelect(e){   
 
     if(this.ganste){
-      alert('Ya el juego termino');
+      Swal.fire(
+        'Juego terminado',
+        'Presione el boton para continuar',
+        'error'
+      )
+      return true;
+    }
+
+    if(this.jugadas.find(x =>x.jugada == e)){
+      Swal.fire(
+        'Esta casilla ya esta ocupada',
+        'Presione el boton para continuar',
+        'error'
+      )
       return true;
     }
 
@@ -58,81 +75,40 @@ export class HomeComponent implements OnInit {
 
     if(this.jugador == 1){
       this.jugadas.push(obj);
-      this.colorCaja(this.jugador,e);
-      console.log('soy el jugador 1')
-      if(this.validarGanador(this.jugador)){
-        alert('Ganaste');
-        this.ganste = true;
-        return true;
-      }
+      this.colorCaja(this.jugador,e);    
+      this.serviValidar.validarGanador(this.jugador,this.jugadas)
+      .then((resp) =>{
+        if(resp){
+          Swal.fire(
+            `Ganador jugador X`,
+            'Presione el boton para continuar',
+            'success'
+          )
+         this.ganste = true; 
+        }
+      });
+
+
       this.jugador = 2;
     }else{      
       this.jugadas.push(obj);
-      this.colorCaja(this.jugador,e);
-      console.log('soy el jugador 2')
-      if(this.validarGanador(this.jugador)){
-        alert('Ganaste');
-        this.ganste = true;
-        return true;
-      }
+      this.colorCaja(this.jugador,e);     
+      this.serviValidar.validarGanador(this.jugador,this.jugadas)
+        .then((resp) =>{
+          if(resp){
+            Swal.fire(
+              `Ganador jugador O`,
+              'Presione el boton para continuar',
+              'success'
+            )
+          this.ganste = true; 
+          }
+        })
       this.jugador = 1;
-    }   
+    }    
   }
 
-  validarGanador(jugador){
-    // Combinaciones para ganar
-    // A:[1,2,3] B:[4,5,6] C:[7,8,9] D:[1,4,7] 
-    // E:[2,5,8] F:[3,6,9] G:[1,5,9] H:[7,5,3]
-
-    let combinacion_a = this.jugadas.filter(x =>x.jugador == jugador &&(x.jugada == 1 || x.jugada == 2 || x.jugada == 3));   
-    
-    if(combinacion_a.length == 3){
-      return true;
-    }
-    
-    let combinacion_b = this.jugadas.filter(x =>x.jugador == jugador &&(x.jugada == 4 || x.jugada == 5 || x.jugada == 6));   
-
-    if(combinacion_b.length == 3){
-      return true;
-    }
-
-    let combinacion_c = this.jugadas.filter(x =>x.jugador == jugador &&(x.jugada == 7 || x.jugada == 8 || x.jugada == 9));   
-
-    if(combinacion_c.length == 3){
-      return true;
-    }
-
-    let combinacion_d = this.jugadas.filter(x =>x.jugador == jugador &&(x.jugada == 1 || x.jugada == 4 || x.jugada == 7));   
-
-    if(combinacion_d.length == 3){
-      return true;
-    }
-
-    let combinacion_e = this.jugadas.filter(x =>x.jugador == jugador &&(x.jugada == 2 || x.jugada == 5 || x.jugada == 8));   
-
-    if(combinacion_e.length == 3){
-      return true;
-    }
-
-    let combinacion_f = this.jugadas.filter(x =>x.jugador == jugador &&(x.jugada == 3 || x.jugada == 6 || x.jugada == 9));   
-
-    if(combinacion_f.length == 3){
-      return true;
-    }
-
-    let combinacion_g = this.jugadas.filter(x =>x.jugador == jugador &&(x.jugada == 1 || x.jugada == 5 || x.jugada == 9));   
-
-    if(combinacion_g.length == 3){
-      return true;
-    }
-
-    let combinacion_h = this.jugadas.filter(x =>x.jugador == jugador &&(x.jugada == 7 || x.jugada == 5 || x.jugada == 3));   
-
-    if(combinacion_h.length == 3){
-      return true;
-    }
-  }
-
+  
   colorCaja(jugador,valor){
 
     if(jugador == 1){
@@ -241,6 +217,8 @@ export class HomeComponent implements OnInit {
     this.jugadas = [];
     this.ganste = false;
 
+    this.ganador = "";
+
     this.txt1="";
     this.txt2="";
     this.txt3="";
@@ -260,8 +238,6 @@ export class HomeComponent implements OnInit {
     this.caja7="";
     this.caja8="";
     this.caja9="";
-
-
   }
 
 }

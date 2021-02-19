@@ -1,13 +1,13 @@
 <h1 class="text-center">La vieja</h1>
 
 
+<h3>{{ganador}}</h3>
 <div class="container py-5">
     <div class="row">
         <div class="col col-2">
-            <div class="caja" [style.background]="caja1" (click)="onSelect(1)">
+            <div class="caja" [style.background]="caja1"  (click)="onSelect(1)">
                 <p *ngIf="txt1 == 'X'">X</p>
                 <p *ngIf="txt1 == 'O'">O</p>
-
             </div>
         </div> 
         <div class="col col-2">
