@@ -1,0 +1,13 @@
+.caja{
+   
+    height: 100px;
+    border: solid 1px;
+
+    text-align: center;
+    font-size: 24px;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    flex-direction: column;
+
+}
